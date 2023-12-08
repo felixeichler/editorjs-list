@@ -134,7 +134,7 @@ export default class List {
             this.getOutofList(event);
             break;
           case BACKSPACE:
-            this.backspace(event);
+            this.backspace(event, this._data);
             break;
         }
       }, false);
@@ -395,12 +395,21 @@ export default class List {
    *
    * @param {KeyboardEvent} event
    */
-  backspace(event) {
+  backspace(event, data) {
     const items = this._elements.wrapper.querySelectorAll('.' + this.CSS.item),
         firstItem = items[0];
 
     if (!firstItem) {
       return;
+    }
+
+    if(data.items.length < items.length) {
+      // data has fewer items that are rendered!
+      // -> remove last child
+      // todo: don't remove last child, but remove the one that was in focus (but it's not easy to detect?)
+      console.log('removed last child');
+      items[0].parentElement.removeChild(items[items.length - 1]);
+      e.preventDefault(); // prevent backspace action from deleting a character from the remaining item
     }
 
     /**
